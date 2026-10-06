@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>나에게 어울리는 안경 찾기</title>
+        <style>
+body{margin:0;font-family:"Noto Sans KR","Malgun Gothic",sans-serif;background:#fff;}
+#wrap{display:flex;flex-wrap:wrap;align-items:flex-start;max-width:1100px;margin:0 auto;}
+
+
+#bigbox{position:relative;width:500px;max-width:100%;aspect-ratio:2/3;background:#eee;overflow:hidden;}
+#bigimg{width:100%;height:100%;object-fit:cover;display:none;}
+#hint{position:absolute;top:50%;left:0;width:100%;text-align:center;color:#999;}
+
+#glasses{position:absolute;top:32%;left:25%;width:50%;height:11%;display:flex;align-items:center;}
+.lens{flex:0 0 42%;height:100%;box-sizing:border-box;
+      border:4px solid black;border-radius:25%;background:rgba(0,0,0,0.15);}
+#bridge{flex:1;height:4px;background:black;}
+
+
+#panel{flex:1;min-width:320px;padding:20px 30px;text-align:center;}
+#title{font-size:28px;margin:30px 0;}
+#smallbox{width:160px;height:208px;margin:0 auto;background:#eee;overflow:hidden;}
+#smallimg{width:100%;height:100%;object-fit:cover;display:none;}
+#photolabel{display:inline-block;margin:12px 0 30px;font-size:20px;font-weight:bold;cursor:pointer;}
+#photo{display:none;}
+
+#sliders{display:grid;grid-template-columns:1fr 1fr;gap:26px 30px;max-width:520px;margin:0 auto;}
+.item span{display:block;font-weight:bold;font-size:18px;margin-bottom:8px;}
+.item input{width:100%;accent-color:#6df08c;}
+        </style>
+</head>
+<body>
+<div id="wrap">
+
+        <div id="bigbox">
+                <img id="bigimg" src="man.jpg" style="display:block">
+                <div id="hint" style="display:none">오른쪽에서 사진을 넣어주세요</div>
+                <div id="glasses">
+                        <div class="lens" id="lensL"></div>
+                        <div id="bridge"></div>
+                        <div class="lens" id="lensR"></div>
+                </div>
+        </div>
+
+        <div id="panel">
+                <h2 id="title">(나)에게 어울리는 안경 찾아보기~</h2>
+
+                <div id="smallbox"><img id="smallimg" src="man.jpg" style="display:block"></div>
+                <label id="photolabel" for="photo">나의 사진 넣기</label>
+                <input type="file" id="photo" accept="image/*">
+
+                <div id="sliders">
+                        <div class="item"><span>안경 상하</span>
+                                <input type="range" id="updown" min="0" max="100" value="50"></div>
+                        <div class="item"><span>안경 모양</span>
+                                <input type="range" id="shape" min="0" max="50" value="25"></div>
+                        <div class="item"><span>안경 좌우</span>
+                                <input type="range" id="leftright" min="0" max="100" value="50"></div>
+                        <div class="item"><span>안경 굵기</span>
+                                <input type="range" id="thick" min="1" max="14" value="4"></div>
+                        <div class="item"><span>안경태 색상</span>
+                                <input type="range" id="frame" min="0" max="200" value="100"></div>
+                        <div class="item"><span>안경알 색상</span>
+                                <input type="range" id="lens" min="0" max="100" value="20"></div>
+                </div>
+        </div>
+
+</div>
+
+<script>
+
+var name1 = prompt("당신의 이름은?");
+if(name1 == null || name1 == ""){ name1 = "나"; }
+title.innerHTML = "(" + name1 + ")에게 어울리는 안경 찾아보기~";
+
+
+photo.onchange = function(){
+        if(photo.files.length == 0){ return; }
+        var reader = new FileReader();
+        reader.onload = function(){
+                bigimg.src = reader.result;
+                smallimg.src = reader.result;
+                bigimg.style.display = "block";
+                smallimg.style.display = "block";
+                hint.style.display = "none";
+        }
+        reader.readAsDataURL(photo.files[0]);
+}
+
+
+updown.oninput = function(){
+        glasses.style.top = (52 - updown.value * 0.4) + "%";
+}
+
+
+leftright.oninput = function(){
+        glasses.style.left = (10 + leftright.value * 0.3) + "%";
+}
+
+
+shape.oninput = function(){
+        lensL.style.borderRadius = shape.value + "%";
+        lensR.style.borderRadius = shape.value + "%";
+}
+
+
+thick.oninput = function(){
+        lensL.style.borderWidth = thick.value + "px";
+        lensR.style.borderWidth = thick.value + "px";
+        bridge.style.height = thick.value + "px";
+}
+
+
+frame.oninput = function(){
+        var color;
+        if(frame.value <= 100){
+                color = "hsl(0,0%," + (85 * (100 - frame.value) / 100) + "%)";
+        } else {
+                color = "hsl(" + ((frame.value - 100) * 3.6) + ",100%,50%)";
+        }
+        lensL.style.borderColor = color;
+        lensR.style.borderColor = color;
+        bridge.style.background = color;
+}
+
+
+lens.oninput = function(){
+        var c = "rgba(0,0,0," + (lens.value / 100 * 0.75) + ")";
+        lensL.style.background = c;
+        lensR.style.background = c;
+}
+</script>
+</body>
+</html>
